@@ -1,19 +1,25 @@
 package io.github.alfrheim.features;
 
-import io.github.alfrheim.dto.Reservation;
+import io.github.alfrheim.dto.in.Item;
+import io.github.alfrheim.dto.in.ReservationInput;
+import io.github.alfrheim.dto.out.StockReservation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.github.alfrheim.features.builders.ItemBuilder.*;
+import static io.github.alfrheim.features.builders.ReservationIntputBuilder.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.HttpStatus.OK;
 
 /**
@@ -23,6 +29,9 @@ import static org.springframework.http.HttpStatus.OK;
 @SpringBootTest(webEnvironment= WebEnvironment.RANDOM_PORT)
 public class ShoppingFeature {
 
+    private static final String RESERVATION_URL = "/stock/v2/reservation/{reservationId}";
+    private static final Item SHOES = anItem().withVariantId(12).withQuantity(1).build();
+
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -31,7 +40,9 @@ public class ShoppingFeature {
         Map<String, Integer> inputs = new HashMap<>();
         inputs.put("reservationId", 123);
 
-        ResponseEntity<Reservation> response = this.restTemplate.getForEntity("/stock/v2/reservation/{reservationId}", Reservation.class, inputs);
+        HttpEntity<ReservationInput> request = new HttpEntity<>(aReservation().with(SHOES).build());
+
+        ResponseEntity<StockReservation> response = this.restTemplate.exchange(RESERVATION_URL, PATCH, request, StockReservation.class, inputs);
 
         assertThat(response.getStatusCode())
                 .isEqualTo(OK);
@@ -41,4 +52,5 @@ public class ShoppingFeature {
                 .isEqualTo(2);
 
     }
+
 }

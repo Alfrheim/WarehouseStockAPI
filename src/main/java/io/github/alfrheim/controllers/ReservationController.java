@@ -1,8 +1,8 @@
 package io.github.alfrheim.controllers;
 
+import io.github.alfrheim.dto.out.StockReservation;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
@@ -14,7 +14,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 public class ReservationController {
 
     @RequestMapping(method = PATCH)
-    public ReponseEntity<Reservation> addItemReservation( @PathVariable("reservation_id") String reservationId) {
-
+    public StockReservation addItemReservation(@PathVariable("reservation_id") String reservationId) {
+       throw new UnsupportedOperationException();
     }
 }
